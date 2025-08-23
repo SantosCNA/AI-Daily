@@ -41,7 +41,7 @@ jobs:
 
       - name: Build with Jekyll
         run: |
-          jekyll build --source . --destination _site
+          jekyll build --source . --destination _site --verbose
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

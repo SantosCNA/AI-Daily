@@ -1,7 +1,7 @@
 title: 七叔AI洞察日报
 description: AI领域的每日洞察和趋势分析
-baseurl: "" # 部署到username.github.io/repo-name，但baseurl应该为空
-url: "https://santoscna.github.io" # 设置为你的GitHub Pages URL
+baseurl: ""
+url: "https://santoscna.github.io"
 
 # 构建设置
 markdown: kramdown
@@ -32,15 +32,22 @@ exclude:
   - QUICKSTART.md
   - SOURCE_CONFIG.md
   - GITHUB_PAGES_SETUP.md
-  - test_*.py
+  - test_components.py
+  - test_imports.py
+  - test_fixes.py
+  - test_config.py
+  - test_filter_config.py
+  - test_github_pages.py
   - start_review_app.py
   - main.py
   - init_db.py
   - configure_twitter_list.py
   - app.db
-  - *.db
-  - *.sqlite
-  - *.sqlite3
+  - check_database.py
+  - check_timestamps.py
+  - check_today_digest.py
+  - view_digest.py
+  - digest_1.md
 
 # 默认布局
 defaults:
