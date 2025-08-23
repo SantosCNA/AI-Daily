@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 七叔AI洞察助手 (AI Insight Assistant)
 
 ## 🎯 项目概述
@@ -267,3 +268,7 @@ python main.py
 ---
 
 **注意**：请妥善保管您的API密钥和访问令牌，不要将其提交到代码仓库中！
+=======
+# AI-Daily
+AI Daily, regularly updated, providing the latest and most cutting-edge in-depth analysis of AI.  Key Highlights: 3-5 top headline points daily, in-depth overview, tools &amp; resources.  Suitable for: AI practitioners, research enthusiasts, product managers, developers, etc., all of whom can quickly obtain cutting-edge information.
+>>>>>>> 8519b710da1422abdfb07a817a6eae5abe9ec6d8
