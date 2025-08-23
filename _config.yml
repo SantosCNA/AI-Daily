@@ -62,3 +62,10 @@ defaults:
 
 # 时区
 timezone: Asia/Shanghai
+
+# 添加collections配置
+collections:
+  digest:
+    output: true
+    permalink: /digest/:name/
+    layout: page
