@@ -3,83 +3,80 @@ layout: page
 title: 七叔AI洞察日报
 ---
 
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }}</title>
-    <meta name="description" content="AI领域的每日洞察和趋势分析">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <style>
-        body { padding-top: 2rem; }
-        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4rem 0; }
-        .feature-card { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s; }
-        .feature-card:hover { transform: translateY(-5px); }
-    </style>
-</head>
-<body>
-    <div class="hero text-center">
-        <div class="container">
-            <h1 class="display-4">🤖 七叔AI洞察日报</h1>
-            <p class="lead">AI领域的每日洞察和趋势分析</p>
-            <p class="mb-4">每天为您精选最重要的AI动态，深度分析行业趋势</p>
-            <a href="/AI-Daily/digest/" class="btn btn-light btn-lg">查看最新日报</a>
-        </div>
+<style>
+    .hero { 
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        color: white; 
+        padding: 4rem 0; 
+        margin-top: -2rem;
+    }
+    .feature-card { 
+        border: none; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        transition: transform 0.3s; 
+    }
+    .feature-card:hover { 
+        transform: translateY(-5px); 
+    }
+    .list-group-item {
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: 0.375rem;
+    }
+    .list-group-item:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+</style>
+
+<div class="hero text-center">
+    <div class="container">
+        <h1 class="display-4">🤖 七叔AI洞察日报</h1>
+        <p class="lead">AI领域的每日洞察和趋势分析</p>
+        <p class="mb-4">每天为您精选最重要的AI动态，深度分析行业趋势</p>
+        <a href="/AI-Daily/digest/2025-08-24/" class="btn btn-light btn-lg">查看最新日报</a>
     </div>
+</div>
 
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card feature-card h-100">
-                    <div class="card-body text-center">
-                        <h3>📊 智能筛选</h3>
-                        <p>使用AI技术从海量信息中筛选出最重要的内容</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card feature-card h-100">
-                    <div class="card-body text-center">
-                        <h3>🚀 实时更新</h3>
-                        <p>每日自动更新，确保您获得最新的AI行业动态</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card feature-card h-100">
-                    <div class="card-body text-center">
-                        <h3>💡 深度洞察</h3>
-                        <p>不仅仅是新闻汇总，更有专业的趋势分析和未来展望</p>
-                    </div>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card h-100">
+                <div class="card-body text-center">
+                    <h3>📊 智能筛选</h3>
+                    <p>使用AI技术从海量信息中筛选出最重要的内容</p>
                 </div>
             </div>
         </div>
-
-        <div class="row mt-5">
-            <div class="col-12 text-center">
-                <h2>📰 最新日报</h2>
-                <p class="text-muted">点击下方链接查看最新的AI洞察日报</p>
-                <div class="list-group">
-                    <a href="/AI-Daily/digest/2025-08-24/" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">AI洞察日报 - 2025-08-24</h5>
-                            <small class="text-muted">最新</small>
-                        </div>
-                        <p class="mb-1">OpenAI发布GPT-5，定位为企业级AI解决方案，标志着智能工作新时代的到来</p>
-                    </a>
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card h-100">
+                <div class="card-body text-center">
+                    <h3>🚀 实时更新</h3>
+                    <p>每日自动更新，确保您获得最新的AI行业动态</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card h-100">
+                <div class="card-body text-center">
+                    <h3>💡 深度洞察</h3>
+                    <p>不仅仅是新闻汇总，更有专业的趋势分析和未来展望</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-light py-4 mt-5">
-        <div class="container text-center">
-            <p class="text-muted mb-0">© 2025 七叔AI洞察助手. 所有内容均通过AI技术生成，仅供参考。</p>
-            <p class="text-muted mb-0"><small>最后更新: 2025-08-24 20:30</small></p>
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <h2>📰 最新日报</h2>
+            <p class="text-muted">点击下方链接查看最新的AI洞察日报</p>
+            <div class="list-group">
+                <a href="/AI-Daily/digest/2025-08-24/" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">AI洞察日报 - 2025-08-24</h5>
+                        <small class="text-muted">最新</small>
+                    </div>
+                    <p class="mb-1">OpenAI发布GPT-5，定位为企业级AI解决方案，标志着智能工作新时代的到来</p>
+                </a>
+            </div>
         </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    </div>
+</div>
