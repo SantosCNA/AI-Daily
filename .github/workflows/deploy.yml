@@ -34,12 +34,12 @@ jobs:
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
             echo "${{ github.event.client_payload.digest_content }}" > "digest/${{ github.event.client_payload.date }}.md"
             # 同时，更新首页索引列表
-            echo "- [${{ github.event.client_payload.date }}](${{ github.event.client_payload.date }}.md)" >> digest/README.md
+            echo "- [${{ github.event.client_payload.date }}](/digest/${{ github.event.client_payload.date }}/)" >> digest/README.md
           else
             # 如果是手动触发，创建示例页面
             echo "# AI洞察日报 - $(date +%Y-%m-%d)" > "digest/$(date +%Y-%m-%d).md"
             echo "这是手动触发的示例日报" >> "digest/$(date +%Y-%m-%d).md"
-            echo "- [$(date +%Y-%m-%d)]($(date +%Y-%m-%d).md)" >> digest/README.md
+            echo "- [$(date +%Y-%m-%d)](/digest/$(date +%Y-%m-%d)/)" >> digest/README.md
           fi
 
       - name: Create digest index
@@ -51,12 +51,21 @@ jobs:
             echo "" >> digest/README.md
           fi
 
-      - name: Build with Jekyll
-        # 使用Jekyll静态网站生成器，GitHub Pages原生支持
-        uses: actions/jekyll-build-pages@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          source: ./digest/   # 我们的日报放在digest目录
-          destination: ./_site 
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Install Jekyll
+        run: |
+          gem install jekyll bundler
+          bundle install
+
+      - name: Build with Jekyll
+        # 使用Jekyll静态网站生成器，从根目录构建
+        run: |
+          jekyll build --source . --destination _site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -19,11 +19,29 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor
+  - review_app
+  - ai_processor
+  - fetcher
+  - digest_generator
+  - notification
+  - logs
+  - venv
+  - .env
+  - .gitignore
+  - README.md
+  - QUICKSTART.md
+  - SOURCE_CONFIG.md
+  - GITHUB_PAGES_SETUP.md
+  - test_*.py
+  - start_review_app.py
+  - main.py
+  - init_db.py
+  - configure_twitter_list.py
 
-# 默认布局 - 移除posts类型配置，使用页面布局
+# 默认布局
 defaults:
   - scope:
-      path: ""
+      path: "digest"
       type: "pages"
     values:
       layout: "page"
