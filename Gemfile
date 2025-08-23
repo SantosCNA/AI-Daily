@@ -1,15 +1,15 @@
 source "https://rubygems.org"
 
-gem "jekyll", "~> 4.3.0"
-gem "jekyll-feed", "~> 0.17"
-gem "jekyll-seo-tag", "~> 2.8"
+gem "jekyll", "~> 4.2.0"
+gem "jekyll-feed", "~> 0.16"
+gem "jekyll-seo-tag", "~> 2.7"
 
 # 如果使用GitHub Pages，取消注释下面这行
 # gem "github-pages", group: :jekyll_plugins
 
 group :jekyll_plugins do
-  gem "jekyll-feed", "~> 0.17"
-  gem "jekyll-seo-tag", "~> 2.8"
+  gem "jekyll-feed", "~> 0.16"
+  gem "jekyll-seo-tag", "~> 2.7"
 end
 
 # Windows和JRUBY平台
