@@ -1,0 +1,65 @@
+# AI洞察助手 - 内容筛选配置
+# 系统级配置，支持后续用户个性化覆盖
+
+system:
+  # 筛选严格度配置
+  filter_strictness: "strict"  # strict, moderate, loose
+  
+  # 内容保留率配置（严格筛选模式）
+  retention_rates:
+    rss: 0.25          # RSS源保留25%
+    arxiv: 0.20        # arXiv论文保留20%
+    twitter: 0.15      # Twitter内容保留15%
+    huggingface: 0.30  # Hugging Face模型保留30%
+    github: 0.25       # GitHub项目保留25%
+    web_scrape: 0.20   # Web爬虫内容保留20%
+  
+  # LLM筛选提示词配置
+  llm_prompts:
+    rss_filter: "prompts/rss_filter_prompt.txt"
+    arxiv_filter: "prompts/arxiv_filter_prompt.txt"
+    twitter_filter: "prompts/twitter_filter_prompt.txt"
+  
+  # 备用规则筛选配置
+  fallback_rules:
+    enable_rule_based: true
+    min_importance_score: 0.7
+    keyword_boost: ["GPT", "LLM", "SOTA", "breakthrough", "release", "funding"]
+    source_priority:
+      high: ["OpenAI", "DeepMind", "Google", "Meta", "Anthropic"]
+      medium: ["Microsoft", "Apple", "Amazon", "NVIDIA"]
+      low: ["startup", "academic", "general"]
+  
+  # 配置验证设置
+  validation:
+    auto_optimize: true
+    conflict_resolution: "user_override"
+    min_config_version: "1.0.0"
+  
+  # 性能优化设置
+  performance:
+    max_batch_size: 50
+    llm_timeout: 30
+    retry_attempts: 3
+    cache_duration: 3600  # 1小时缓存
+
+# 用户配置模板（MVP-1阶段使用默认配置）
+user_templates:
+  default:
+    name: "默认配置"
+    description: "MVP-1阶段的默认筛选配置"
+    strictness: "strict"
+    retention_rates: "system_default"
+    custom_keywords: []
+    source_preferences: []
+  
+  # 后续可扩展的用户配置模板
+  # enterprise:
+  #   name: "企业级配置"
+  #   description: "适合企业用户的筛选配置"
+  #   strictness: "moderate"
+  #   retention_rates: "custom"
+  #   custom_retention_rates:
+  #     rss: 0.40
+  #     arxiv: 0.30
+  #     twitter: 0.25

@@ -1,0 +1,39 @@
+title: 七叔AI洞察日报
+description: AI领域的每日洞察和趋势分析
+baseurl: "" # 如果部署到username.github.io/repo-name，则设置为"/repo-name"
+url: "" # 设置为你的GitHub Pages URL
+
+# 构建设置
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# 插件
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# 排除文件
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# 默认布局
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "七叔AI洞察助手"
+      comments: false
+      share: false
+
+# 分页设置
+paginate: 10
+paginate_path: "/page/:num/"
+
+# 时区
+timezone: Asia/Shanghai

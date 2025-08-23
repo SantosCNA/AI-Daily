@@ -1,0 +1,68 @@
+name: Deploy AI Daily to GitHub Pages
+
+# 当有人推送内容到main分支时，或者通过API触发时，运行此工作流
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # 这允许手动在Actions标签页触发工作流
+  repository_dispatch: # 允许通过API触发
+    types: [deploy-daily]
+
+# 设置GITHUB_TOKEN权限，允许写入仓库
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }} # 使用我们设置的密钥来认证
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Create today's digest page
+        # 这是一个自定义步骤：将推送过来的日报内容写入一个文件
+        run: |
+          mkdir -p digest
+          # 从API触发事件中获取日报内容
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "${{ github.event.client_payload.digest_content }}" > "digest/${{ github.event.client_payload.date }}.md"
+            # 同时，更新首页索引列表
+            echo "- [${{ github.event.client_payload.date }}](${{ github.event.client_payload.date }}.md)" >> digest/README.md
+          else
+            # 如果是手动触发，创建示例页面
+            echo "# AI洞察日报 - $(date +%Y-%m-%d)" > "digest/$(date +%Y-%m-%d).md"
+            echo "这是手动触发的示例日报" >> "digest/$(date +%Y-%m-%d).md"
+            echo "- [$(date +%Y-%m-%d)]($(date +%Y-%m-%d).md)" >> digest/README.md
+          fi
+
+      - name: Create digest index
+        run: |
+          if [ ! -f "digest/README.md" ]; then
+            echo "# AI洞察日报索引" > digest/README.md
+            echo "" >> digest/README.md
+            echo "## 最新日报" >> digest/README.md
+            echo "" >> digest/README.md
+          fi
+
+      - name: Build with Jekyll
+        # 使用Jekyll静态网站生成器，GitHub Pages原生支持
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./digest/   # 我们的日报放在digest目录
+          destination: ./_site 
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
