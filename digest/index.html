@@ -1,50 +1,212 @@
 ---
-layout: page
+layout: null
 title: AI洞察日报索引
 author: 七叔AI洞察助手
 ---
 
-# 📰 AI洞察日报索引
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+    <meta name="description" content="AI领域的每日洞察和趋势分析">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+        body { 
+            padding-top: 2rem; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .navbar-brand { 
+            font-weight: bold; 
+            font-size: 1.5rem;
+        }
+        .content { 
+            min-height: 70vh; 
+            padding-top: 2rem;
+        }
+        .footer { 
+            margin-top: 3rem; 
+            border-top: 1px solid #dee2e6;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        .feature-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            margin-bottom: 1rem;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .digest-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .digest-link:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/AI-Daily/">🤖 七叔AI洞察日报</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/AI-Daily/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/AI-Daily/digest/">日报索引</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-欢迎访问七叔AI洞察日报！这里收录了所有已发布的AI领域洞察日报。
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4">📰 AI洞察日报索引</h1>
+            <p class="lead">欢迎访问七叔AI洞察日报！这里收录了所有已发布的AI领域洞察日报。</p>
+        </div>
+    </div>
 
-## 🆕 最新日报
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2 class="h4 mb-0">🆕 最新日报</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="/AI-Daily/digest/2025-08-24/" class="list-group-item list-group-item-action digest-link">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">AI洞察日报 - 2025-08-24</h5>
+                                    <span class="badge bg-primary">最新</span>
+                                </div>
+                                <p class="mb-1">OpenAI发布GPT-5，定位为企业级AI解决方案，标志着智能工作新时代的到来</p>
+                            </a>
+                            <a href="/AI-Daily/digest/2025-08-23/" class="list-group-item list-group-item-action digest-link">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">AI洞察日报 - 2025-08-23</h5>
+                                    <span class="badge bg-secondary">已发布</span>
+                                </div>
+                                <p class="mb-1">Anthropic发布Claude Opus 4.1模型，美国发布AI行动计划</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-- [AI洞察日报 - 2025-08-24](/AI-Daily/digest/2025-08-24/) - OpenAI发布GPT-5，定位为企业级AI解决方案，标志着智能工作新时代的到来
-- [AI洞察日报 - 2025-08-23](/AI-Daily/digest/2025-08-23/) - Anthropic发布Claude Opus 4.1模型，美国发布AI行动计划
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card feature-card h-100">
+                            <div class="card-body text-center">
+                                <h3>🎯 核心动态</h3>
+                                <p>用2-3句话概括今日AI世界的主要动向</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card feature-card h-100">
+                            <div class="card-body text-center">
+                                <h3>📈 趋势分析</h3>
+                                <p>资深分析师视角的趋势分析和未来展望</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-## 📅 历史日报
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="card feature-card h-100">
+                            <div class="card-body text-center">
+                                <h3>🔍 今日精选</h3>
+                                <p>按技术突破、产品发布、行业动态分类的精选内容</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card feature-card h-100">
+                            <div class="card-body text-center">
+                                <h3>📋 完整列表</h3>
+                                <p>所有获取到的AI相关信息汇总</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-### 2025年8月
-- [2025-08-24](/AI-Daily/digest/2025-08-24/) - 最新发布
-- [2025-08-23](/AI-Daily/digest/2025-08-23/) - 已发布
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">📊 数据来源</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li>🔬 <strong>学术研究</strong>：arXiv、Hugging Face</li>
+                                    <li>💻 <strong>技术博客</strong>：OpenAI、DeepMind、Google AI</li>
+                                    <li>📰 <strong>行业新闻</strong>：TechCrunch、VentureBeat</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li>🚀 <strong>开源项目</strong>：GitHub Trending</li>
+                                    <li>🐦 <strong>社交媒体</strong>：Twitter AI KOL动态</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-## 🔍 日报特色
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">🚀 自动化流程</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ol>
+                                    <li><strong>每日抓取</strong>：自动从多个信源获取最新内容</li>
+                                    <li><strong>AI筛选</strong>：使用DeepSeek API智能筛选重要信息</li>
+                                </ol>
+                            </div>
+                            <div class="col-md-6">
+                                <ol start="3">
+                                    <li><strong>自动生成</strong>：AI自动生成结构化的洞察日报</li>
+                                    <li><strong>即时发布</strong>：通过GitHub Actions自动部署到GitHub Pages</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-每份日报都包含以下内容：
+    <footer class="footer bg-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="text-muted mb-0">© 2025 七叔AI洞察助手. 所有内容均通过AI技术生成，仅供参考。</p>
+            <p class="text-muted mb-0"><small>最后更新时间：2025-08-24</small></p>
+        </div>
+    </footer>
 
-- **🎯 核心动态**：用2-3句话概括今日AI世界的主要动向
-- **📈 趋势分析**：资深分析师视角的趋势分析和未来展望  
-- **🔍 今日精选**：按技术突破、产品发布、行业动态分类的精选内容
-- **📋 完整列表**：所有获取到的AI相关信息汇总
-
-## 📊 数据来源
-
-日报内容来自以下权威信源：
-
-- **学术研究**：arXiv、Hugging Face
-- **技术博客**：OpenAI、DeepMind、Google AI
-- **行业新闻**：TechCrunch、VentureBeat
-- **开源项目**：GitHub Trending
-- **社交媒体**：Twitter AI KOL动态
-
-## 🚀 自动化流程
-
-1. **每日抓取**：自动从多个信源获取最新内容
-2. **AI筛选**：使用DeepSeek API智能筛选重要信息
-3. **自动生成**：AI自动生成结构化的洞察日报
-4. **即时发布**：通过GitHub Actions自动部署到GitHub Pages
-
----
-
-*最后更新时间：2025-08-24*
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
