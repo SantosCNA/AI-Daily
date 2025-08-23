@@ -60,16 +60,5 @@ defaults:
       comments: false
       share: false
 
-# 分页设置
-paginate: 10
-paginate_path: "/page/:num/"
-
 # 时区
 timezone: Asia/Shanghai
-
-# 添加collections配置
-collections:
-  digests:
-    output: true
-    permalink: /digest/:name/
-    layout: page

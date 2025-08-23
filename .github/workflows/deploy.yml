@@ -17,9 +17,6 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
       - name: Checkout
@@ -34,14 +31,11 @@ jobs:
           ruby-version: '3.1'
           bundler-cache: true
 
-      - name: Install Jekyll
-        run: |
-          gem install jekyll bundler
-          bundle install
+      - name: Install dependencies
+        run: bundle install
 
       - name: Build with Jekyll
-        run: |
-          jekyll build --source . --destination _site --verbose
+        run: bundle exec jekyll build --source . --destination _site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -49,5 +43,4 @@ jobs:
           path: _site
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
