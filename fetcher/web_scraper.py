@@ -395,7 +395,7 @@ class WebScraper:
                     time.sleep(random.uniform(2, 5))
                     
             except Exception as e:
-                logger.error(f"抓取信源失败 {source_name}: {e}")
+                logger.error(f"抓取信源失败 {config.get('source_name', 'Unknown')}: {e}")
                 continue
         
         logger.info(f"批量抓取完成，总共获取 {len(all_content)} 条内容")
