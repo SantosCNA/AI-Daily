@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} - {{ site.title }}</title>
+    <meta name="description" content="{{ page.excerpt | default: site.description }}">
+    <meta name="author" content="{{ page.author | default: site.author }}">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+        .hero-section .meta {
+            opacity: 0.9;
+            font-size: 1.2rem;
+        }
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        .digest-content {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        .digest-content h1, .digest-content h2, .digest-content h3 {
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .digest-content h1 {
+            font-size: 2.2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .digest-content h2 {
+            font-size: 1.8rem;
+            color: #667eea;
+        }
+        .digest-content h3 {
+            font-size: 1.4rem;
+            color: #34495e;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c757d;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            color: #495057;
+            text-decoration: none;
+        }
+        .footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        .footer a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            .content-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-robot"></i> {{ site.title }}
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/digest/">
+                    <i class="bi bi-clock-history"></i> 日报索引
+                </a>
+                <a class="nav-link" href="https://github.com/SantosCNA/AI-Daily">
+                    <i class="bi bi-github"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <div class="hero-section">
+        <div class="container text-center">
+            <h1>📰 {{ site.title }}</h1>
+            <div class="meta">
+                <span class="badge bg-light text-dark fs-6">{{ page.date | date: "%Y年%m月%d日" }}</span>
+                <span style="margin-left: 15px;">{{ page.author }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="container">
+        <div class="content-section">
+            <a href="/digest/" class="back-link">
+                <i class="bi bi-arrow-left"></i> 返回日报索引
+            </a>
+            
+            <div class="digest-content">
+                {{ content }}
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 {{ site.title }}. 由AI洞察助手自动生成。</p>
+            <p>
+                <a href="https://github.com/SantosCNA/AI-Daily">GitHub仓库</a> | 
+                <a href="/digest/">日报索引</a> | 
+                <a href="/">返回首页</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

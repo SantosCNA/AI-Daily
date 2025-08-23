@@ -1,7 +1,7 @@
 title: 七叔AI洞察日报
 description: AI领域的每日洞察和趋势分析
 baseurl: "" # 如果部署到username.github.io/repo-name，则设置为"/repo-name"
-url: "" # 设置为你的GitHub Pages URL
+url: "https://santoscna.github.io" # 设置为你的GitHub Pages URL
 
 # 构建设置
 markdown: kramdown
@@ -20,13 +20,13 @@ exclude:
   - node_modules
   - vendor
 
-# 默认布局
+# 默认布局 - 移除posts类型配置，使用页面布局
 defaults:
   - scope:
       path: ""
-      type: "posts"
+      type: "pages"
     values:
-      layout: "post"
+      layout: "page"
       author: "七叔AI洞察助手"
       comments: false
       share: false
@@ -37,3 +37,10 @@ paginate_path: "/page/:num/"
 
 # 时区
 timezone: Asia/Shanghai
+
+# 添加collections配置
+collections:
+  digests:
+    output: true
+    permalink: /digest/:name/
+    layout: page
