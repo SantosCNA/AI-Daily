@@ -1,19 +1,19 @@
 """
-日报模板渲染器
-负责将AI洞察渲染成结构化的日报
+AI日报模板渲染器
+负责将AI生成的洞察转换为结构化的日报格式
 """
 
 import os
-import sys
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional
 import logging
+from datetime import datetime, timedelta
+from typing import List, Dict, Optional
+from models import SessionLocal, Digest, Insight
+from notification.email_sender import EmailSender
 
 # 添加项目根目录到Python路径
+import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models import SessionLocal, Insight, RawContent, Digest
-from notification import EmailSender
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -131,10 +131,15 @@ class DigestTemplateRenderer:
             start_date = datetime.strptime(date, '%Y-%m-%d')
             end_date = start_date + timedelta(days=1)
             
+            # 使用更灵活的时间查询，考虑时区差异
+            # 查询最近24小时内的洞察数据
+            recent_cutoff = datetime.now() - timedelta(hours=24)
+            
             insights = session.query(Insight).filter(
-                Insight.created_at >= start_date,
-                Insight.created_at < end_date
+                Insight.created_at >= recent_cutoff
             ).all()
+            
+            logger.info(f"找到 {len(insights)} 条最近24小时的洞察数据")
             
             # 转换为字典格式
             insight_list = []

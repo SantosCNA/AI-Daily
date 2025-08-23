@@ -299,6 +299,110 @@ class DeepSeekClient:
             logger.error(f"DeepSeek API连接测试失败: {e}")
             return False
 
+    def filter_content(self, content_list: List[str], content_type: str = "rss") -> Dict:
+        """
+        专门用于内容筛选的方法
+        
+        Args:
+            content_list: 内容列表
+            content_type: 内容类型 (rss, twitter, arxiv)
+            
+        Returns:
+            包含筛选结果的字典
+        """
+        try:
+            # 构建筛选专用的提示词
+            if content_type == "rss":
+                prompt = f"""你是一位资深的AI行业分析师，负责从海量信息中筛选出最重要的AI动态。
+
+请严格评估以下文章列表，并仅筛选出符合"重要性标准"的文章。
+
+重要性标准：
+一条信息必须满足以下至少一点，才被视为"重要"：
+1. 技术突破：提到了新的State-of-the-Art (SOTA)模型、重大性能提升、开创性的新方法
+2. 产品发布：知名公司/机构发布了新产品、新模型或重大更新
+3. 市场事件：涉及重大融资(>千万美元)、收购、合并、或有深远影响的政策监管新闻
+4. 行业洞察：来自顶级风投或公认KOL的深度分析报告
+
+请仅返回一个纯粹的JSON对象，格式如下：
+{{
+    "selected_indices": [0, 2, 5]
+}}
+
+其中selected_indices是一个整数数组，包含符合标准的文章在列表中的索引位置（从0开始）。
+
+文章列表：
+{chr(10).join([f"{i}: {content[:100]}..." for i, content in enumerate(content_list)])}
+
+请确保返回的是有效的JSON格式，不要包含任何其他文本。"""
+            
+            elif content_type == "arxiv":
+                prompt = f"""你是一位AI技术专家，负责从arXiv的机器学习论文中筛选出非研究背景人士也能理解的、具有重大应用潜力的技术进展。
+
+重要性标准：
+一篇论文值得被选中，如果：
+1. 高性能：在多个基准测试中达到了SOTA或接近SOTA的水平
+2. 高效率：提出了显著降低计算成本、内存消耗或模型大小的新方法
+3. 新颖性：提出了一种全新的、反直觉的解决问题的方法
+4. 实用性：代码已开源，或方法简单易于复现，预计很快会被开发者社区采用
+
+请仅返回一个纯粹的JSON对象，格式如下：
+{{
+    "selected_indices": [0, 1, 3]
+}}
+
+其中selected_indices是一个整数数组，包含符合标准的论文在列表中的索引位置（从0开始）。
+
+论文列表：
+{chr(10).join([f"{i}: {content[:100]}..." for i, content in enumerate(content_list)])}
+
+请确保返回的是有效的JSON格式，不要包含任何其他文本。"""
+            
+            else:  # twitter
+                prompt = f"""你是一位AI情报员，需要监控关键人物的Twitter动态。请从以下推文中筛选出具有实质性内容的信息，忽略个人感慨、闲聊、纯转发和重复内容。
+
+重要性标准：
+一条推文值得被选中，如果它是：
+1. 官方公告：宣布新产品、新功能、公司动态、融资等
+2. 技术解读：分享了对新论文、新技术的独到见解或线程(Thread)
+3. 趋势预测：发布了关于行业未来的预测或分析
+4. 重要数据：包含了新鲜的、有价值的数据或图表
+
+请仅返回一个纯粹的JSON对象，格式如下：
+{{
+    "selected_indices": [0, 2, 4]
+}}
+
+其中selected_indices是一个整数数组，包含符合标准的推文在列表中的索引位置（从0开始）。
+
+推文列表：
+{chr(10).join([f"{i}: {content[:100]}..." for i, content in enumerate(content_list)])}
+
+请确保返回的是有效的JSON格式，不要包含任何其他文本。"""
+            
+            # 调用API
+            response = self._call_deepseek_api(prompt)
+            
+            if not response:
+                return {"selected_indices": []}
+            
+            # 尝试解析JSON响应
+            try:
+                result = json.loads(response)
+                if 'selected_indices' in result and isinstance(result['selected_indices'], list):
+                    return result
+                else:
+                    logger.warning("AI响应缺少selected_indices字段")
+                    return {"selected_indices": []}
+            except json.JSONDecodeError as e:
+                logger.error(f"筛选响应JSON解析失败: {e}")
+                logger.error(f"原始响应: {response}")
+                return {"selected_indices": []}
+                
+        except Exception as e:
+            logger.error(f"内容筛选失败: {e}")
+            return {"selected_indices": []}
+
 
 if __name__ == "__main__":
     # 测试代码

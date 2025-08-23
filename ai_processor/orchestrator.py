@@ -16,9 +16,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from models import SessionLocal, RawContent, Insight, SourceConfig
 from fetcher import (
     RSSFetcher, TwitterFetcher, ArxivFetcher,
-    HuggingFaceFetcher, GitHubFetcher, WebScraper,
-    content_filter
+    HuggingFaceFetcher, GitHubFetcher, WebScraper
 )
+from fetcher.content_filter import ContentFilter
 from .openai_client import DeepSeekClient
 
 # 配置日志
@@ -40,6 +40,7 @@ class AIOrchestrator:
             self.github_fetcher = GitHubFetcher()
             self.web_scraper = WebScraper()
             self.ai_client = DeepSeekClient()
+            self.content_filter = ContentFilter()
             
             logger.info("AI处理协调器初始化成功")
             
@@ -126,7 +127,7 @@ class AIOrchestrator:
                 # 内容筛选
                 if rss_content:
                     logger.info("开始RSS内容筛选...")
-                    filtered_rss = content_filter.filter_rss_content(rss_content)
+                    filtered_rss = self.content_filter.filter_rss_content(rss_content)
                     logger.info(f"RSS筛选完成，筛选前: {len(rss_content)}，筛选后: {len(filtered_rss)}")
                     all_content.extend(filtered_rss)
                 else:
@@ -148,7 +149,7 @@ class AIOrchestrator:
                 # 内容筛选
                 if arxiv_content:
                     logger.info("开始arXiv内容筛选...")
-                    filtered_arxiv = content_filter.filter_arxiv_papers(arxiv_content)
+                    filtered_arxiv = self.content_filter.filter_arxiv_papers(arxiv_content)
                     logger.info(f"arXiv筛选完成，筛选前: {len(arxiv_content)}，筛选后: {len(filtered_arxiv)}")
                     all_content.extend(filtered_arxiv)
                 else:
@@ -172,7 +173,16 @@ class AIOrchestrator:
             if web_scrape_sources:
                 logger.info(f"开始抓取 {len(web_scrape_sources)} 个Web爬虫信源")
                 try:
-                    web_content = self.web_scraper.scrape_multiple_sources(web_scrape_sources)
+                    # 将SourceConfig对象转换为字典格式
+                    web_source_configs = []
+                    for source in web_scrape_sources:
+                        web_source_configs.append({
+                            'source_type': source.source_type,
+                            'source_name': source.source_name,
+                            'source_url': source.source_url
+                        })
+                    
+                    web_content = self.web_scraper.scrape_multiple_sources(web_source_configs)
                     all_content.extend(web_content)
                     logger.info(f"Web爬虫抓取完成，获取 {len(web_content)} 条内容")
                 except Exception as e:
@@ -258,18 +268,27 @@ class AIOrchestrator:
             logger.info(f"示例内容格式: {list(sample_content.keys())}")
             logger.info(f"示例URL: {sample_content.get('url', 'NO_URL')}")
             logger.info(f"示例标题: {sample_content.get('title', 'NO_TITLE')[:50]}...")
+            logger.info(f"示例source_type: {sample_content.get('source_type', 'NO_TYPE')}")
+            logger.info(f"示例source_name: {sample_content.get('source_name', 'NO_NAME')}")
         
         session = SessionLocal()
         stored_count = 0
+        skipped_count = 0
         
         try:
-            for content in content_list:
+            for i, content in enumerate(content_list):
                 try:
+                    logger.debug(f"处理第 {i+1} 条内容: {content.get('title', 'NO_TITLE')[:30]}...")
+                    
                     # 检查是否已存在（基于URL）
                     if content.get('url'):
                         existing = session.query(RawContent).filter_by(url=content['url']).first()
                         if existing:
+                            logger.debug(f"内容已存在，跳过: {content['url']}")
+                            skipped_count += 1
                             continue
+                    else:
+                        logger.warning(f"第 {i+1} 条内容没有URL: {content.get('title', 'NO_TITLE')[:30]}...")
                     
                     # 创建新的RawContent记录
                     raw_content = RawContent(
@@ -285,12 +304,24 @@ class AIOrchestrator:
                     session.add(raw_content)
                     stored_count += 1
                     
+                    # 每存储10条内容提交一次，避免事务过大
+                    if stored_count % 10 == 0:
+                        session.commit()
+                        logger.info(f"已存储 {stored_count} 条内容")
+                    
                 except Exception as e:
-                    logger.error(f"存储内容失败: {e}")
+                    logger.error(f"存储第 {i+1} 条内容失败: {e}")
+                    logger.error(f"内容数据: {content}")
                     continue
             
-            session.commit()
-            logger.info(f"成功存储 {stored_count} 条内容到数据库")
+            # 最终提交
+            if stored_count > 0:
+                session.commit()
+                logger.info(f"成功存储 {stored_count} 条内容到数据库")
+            else:
+                logger.warning("没有内容被存储")
+            
+            logger.info(f"存储统计: 成功 {stored_count} 条，跳过 {skipped_count} 条")
             
         except Exception as e:
             logger.error(f"批量存储失败: {e}")

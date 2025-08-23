@@ -8,7 +8,6 @@ import logging
 import time
 from typing import List, Dict, Any, Optional
 from .config_manager import config_manager
-from ai_processor.openai_client import DeepSeekClient
 import os
 
 logger = logging.getLogger(__name__)
@@ -19,10 +18,18 @@ class ContentFilter:
     
     def __init__(self):
         self.config = config_manager
-        self.ai_client = DeepSeekClient()
         self.performance_config = self.config.get_performance_config()
         
         logger.info("内容筛选器初始化成功")
+    
+    def _get_ai_client(self):
+        """延迟初始化AI客户端，避免循环导入"""
+        try:
+            from ai_processor.openai_client import DeepSeekClient
+            return DeepSeekClient()
+        except ImportError:
+            logger.warning("无法导入DeepSeekClient，跳过LLM筛选")
+            return None
     
     def filter_rss_content(self, articles: List[Dict]) -> List[Dict]:
         """筛选RSS内容"""
@@ -103,46 +110,23 @@ class ContentFilter:
     def _llm_filter_rss(self, articles: List[Dict], target_count: int) -> List[Dict]:
         """使用LLM筛选RSS内容"""
         try:
+            ai_client = self._get_ai_client()
+            if not ai_client:
+                return []
+                
             # 准备输入数据
             input_data = []
-            for article in articles[:20]:  # 限制数量避免token超限
+            for article in articles[:20]:  # 限制数量
                 input_data.append(f"[{article.get('title', '')}] - [{article.get('url', '')}]")
             
-            input_text = "\n".join(input_data)
+            # 使用专门的筛选方法
+            response = ai_client.filter_content(input_data, "rss")
             
-            # 读取提示词
-            prompt_path = "prompts/rss_filter_prompt.txt"
-            if os.path.exists(prompt_path):
-                with open(prompt_path, 'r', encoding='utf-8') as f:
-                    prompt_template = f.read()
-            else:
-                # 使用内置提示词
-                prompt_template = self._get_default_rss_prompt()
-            
-            prompt = prompt_template.format(input_article_list=input_text)
-            
-            # 调用LLM
-            response = self.ai_client.generate_insight(prompt, "filter")
-            
-            if response and 'analysis' in response:
-                # 解析JSON响应
-                try:
-                    filtered_data = json.loads(response['analysis'])
-                    if isinstance(filtered_data, list):
-                        # 根据筛选结果找到对应的文章
-                        filtered_articles = []
-                        for item in filtered_data:
-                            if 'url' in item:
-                                # 根据URL找到原文章
-                                for article in articles:
-                                    if article.get('url') == item['url']:
-                                        filtered_articles.append(article)
-                                        break
-                        
-                        # 限制数量
-                        return filtered_articles[:target_count]
-                except json.JSONDecodeError:
-                    logger.warning("LLM返回的JSON格式无效")
+            if response and 'selected_indices' in response:
+                selected_indices = response['selected_indices']
+                if isinstance(selected_indices, list) and len(selected_indices) <= target_count:
+                    selected_articles = [articles[i] for i in selected_indices if i < len(articles)]
+                    return selected_articles[:target_count]
             
             return []
             
@@ -153,44 +137,23 @@ class ContentFilter:
     def _llm_filter_arxiv(self, papers: List[Dict], target_count: int) -> List[Dict]:
         """使用LLM筛选arXiv论文"""
         try:
+            ai_client = self._get_ai_client()
+            if not ai_client:
+                return []
+                
             # 准备输入数据
             input_data = []
-            for paper in papers[:15]:  # 限制数量
-                title = paper.get('title', '')
-                summary = paper.get('content', '')[:200]  # 限制摘要长度
-                url = paper.get('url', '')
-                input_data.append(f"[{title}] - [{summary}] - [{url}]")
+            for paper in papers[:20]:  # 限制数量
+                input_data.append(f"[{paper.get('title', '')}] - [{paper.get('content', '')[:200]}] - [{paper.get('url', '')}]")
             
-            input_text = "\n".join(input_data)
+            # 使用专门的筛选方法
+            response = ai_client.filter_content(input_data, "arxiv")
             
-            # 读取提示词
-            prompt_path = "prompts/arxiv_filter_prompt.txt"
-            if os.path.exists(prompt_path):
-                with open(prompt_path, 'r', encoding='utf-8') as f:
-                    prompt_template = f.read()
-            else:
-                prompt_template = self._get_default_arxiv_prompt()
-            
-            prompt = prompt_template.format(input_paper_list=input_text)
-            
-            # 调用LLM
-            response = self.ai_client.generate_insight(prompt, "filter")
-            
-            if response and 'analysis' in response:
-                try:
-                    filtered_data = json.loads(response['analysis'])
-                    if isinstance(filtered_data, list):
-                        filtered_papers = []
-                        for item in filtered_data:
-                            if 'url' in item:
-                                for paper in papers:
-                                    if paper.get('url') == item['url']:
-                                        filtered_papers.append(paper)
-                                        break
-                        
-                        return filtered_papers[:target_count]
-                except json.JSONDecodeError:
-                    logger.warning("LLM返回的JSON格式无效")
+            if response and 'selected_indices' in response:
+                selected_indices = response['selected_indices']
+                if isinstance(selected_indices, list) and len(selected_indices) <= target_count:
+                    selected_papers = [papers[i] for i in selected_indices if i < len(papers)]
+                    return selected_papers[:target_count]
             
             return []
             
@@ -201,44 +164,23 @@ class ContentFilter:
     def _llm_filter_twitter(self, tweets: List[Dict], target_count: int) -> List[Dict]:
         """使用LLM筛选Twitter内容"""
         try:
+            ai_client = self._get_ai_client()
+            if not ai_client:
+                return []
+                
             # 准备输入数据
             input_data = []
-            for tweet in tweets[:20]:
-                author = tweet.get('source_name', 'Unknown')
-                text = tweet.get('content', '')[:100]  # 限制文本长度
-                url = tweet.get('url', '')
-                input_data.append(f"[@{author}]: [{text}] - [{url}]")
+            for tweet in tweets[:20]:  # 限制数量
+                input_data.append(f"[@{tweet.get('source_name', 'Unknown')}]: [{tweet.get('content', '')[:100]}] - [{tweet.get('url', '')}]")
             
-            input_text = "\n".join(input_data)
+            # 使用专门的筛选方法
+            response = ai_client.filter_content(input_data, "twitter")
             
-            # 读取提示词
-            prompt_path = "prompts/twitter_filter_prompt.txt"
-            if os.path.exists(prompt_path):
-                with open(prompt_path, 'r', encoding='utf-8') as f:
-                    prompt_template = f.read()
-            else:
-                prompt_template = self._get_default_twitter_prompt()
-            
-            prompt = prompt_template.format(input_tweet_list=input_text)
-            
-            # 调用LLM
-            response = self.ai_client.generate_insight(prompt, "filter")
-            
-            if response and 'analysis' in response:
-                try:
-                    filtered_data = json.loads(response['analysis'])
-                    if isinstance(filtered_data, list):
-                        filtered_tweets = []
-                        for item in filtered_data:
-                            if 'url' in item:
-                                for tweet in tweets:
-                                    if tweet.get('url') == item['url']:
-                                        filtered_tweets.append(tweet)
-                                        break
-                        
-                        return filtered_tweets[:target_count]
-                except json.JSONDecodeError:
-                    logger.warning("LLM返回的JSON格式无效")
+            if response and 'selected_indices' in response:
+                selected_indices = response['selected_indices']
+                if isinstance(selected_indices, list) and len(selected_indices) <= target_count:
+                    selected_tweets = [tweets[i] for i in selected_indices if i < len(tweets)]
+                    return selected_tweets[:target_count]
             
             return []
             
@@ -341,51 +283,77 @@ class ContentFilter:
     
     def _get_default_rss_prompt(self) -> str:
         """获取默认RSS筛选提示词"""
-        return """你是一位AI行业分析师，请从以下文章中选择最重要的AI动态：
-        
-        选择标准：
-        1. 技术突破：新模型、重大性能提升
-        2. 产品发布：知名公司新产品
-        3. 市场事件：重大融资、收购
-        4. 行业洞察：顶级风投分析
-        
-        请返回JSON格式：
-        [{"title": "标题", "url": "链接", "reason": "选择理由"}]
-        
-        文章列表：
-        {input_article_list}"""
+        return """你是一位资深的AI行业分析师，负责从海量信息中筛选出最重要的AI动态。
+
+请严格评估以下文章列表，并仅筛选出符合"重要性标准"的文章。
+
+重要性标准：
+一条信息必须满足以下至少一点，才被视为"重要"：
+1. 技术突破：提到了新的State-of-the-Art (SOTA)模型、重大性能提升、开创性的新方法
+2. 产品发布：知名公司/机构发布了新产品、新模型或重大更新
+3. 市场事件：涉及重大融资(>千万美元)、收购、合并、或有深远影响的政策监管新闻
+4. 行业洞察：来自顶级风投或公认KOL的深度分析报告
+
+请仅返回一个纯粹的JSON对象，格式如下：
+{{
+    "selected_indices": [0, 2, 5]
+}}
+
+其中selected_indices是一个整数数组，包含符合标准的文章在列表中的索引位置（从0开始）。
+
+文章列表：
+{input_article_list}
+
+请返回包含 'selected_indices' 的JSON响应，其中 'selected_indices' 是一个整数列表，
+表示符合重要性标准的文章索引。"""
     
     def _get_default_arxiv_prompt(self) -> str:
         """获取默认arXiv筛选提示词"""
-        return """你是AI技术专家，请从以下论文中选择有应用潜力的：
-        
-        选择标准：
-        1. 高性能：达到SOTA水平
-        2. 高效率：降低计算成本
-        3. 新颖性：全新方法
-        4. 实用性：代码开源
-        
-        请返回JSON格式：
-        [{"title": "标题", "url": "链接", "summary": "摘要", "reason": "选择理由"}]
-        
-        论文列表：
-        {input_paper_list}"""
+        return """你是一位AI技术专家，负责从arXiv的机器学习论文中筛选出非研究背景人士也能理解的、具有重大应用潜力的技术进展。
+
+重要性标准：
+一篇论文值得被选中，如果：
+1. 高性能：在多个基准测试中达到了SOTA或接近SOTA的水平
+2. 高效率：提出了显著降低计算成本、内存消耗或模型大小的新方法
+3. 新颖性：提出了一种全新的、反直觉的解决问题的方法
+4. 实用性：代码已开源，或方法简单易于复现，预计很快会被开发者社区采用
+
+请仅返回一个纯粹的JSON对象，格式如下：
+{{
+    "selected_indices": [0, 1, 3]
+}}
+
+其中selected_indices是一个整数数组，包含符合标准的论文在列表中的索引位置（从0开始）。
+
+论文列表：
+{input_paper_list}
+
+请返回包含 'selected_indices' 的JSON响应，其中 'selected_indices' 是一个整数列表，
+表示符合重要性标准的论文索引。"""
     
     def _get_default_twitter_prompt(self) -> str:
         """获取默认Twitter筛选提示词"""
-        return """你是AI情报员，请从以下推文中选择有价值信息：
-        
-        选择标准：
-        1. 官方公告：新产品、功能
-        2. 技术解读：独到见解
-        3. 趋势预测：行业分析
-        4. 重要数据：有价值信息
-        
-        请返回JSON格式：
-        [{"text": "推文内容", "url": "链接", "author": "作者", "reason": "选择理由"}]
-        
-        推文列表：
-        {input_tweet_list}"""
+        return """你是一位AI情报员，需要监控关键人物的Twitter动态。请从以下推文中筛选出具有实质性内容的信息，忽略个人感慨、闲聊、纯转发和重复内容。
+
+重要性标准：
+一条推文值得被选中，如果它是：
+1. 官方公告：宣布新产品、新功能、公司动态、融资等
+2. 技术解读：分享了对新论文、新技术的独到见解或线程(Thread)
+3. 趋势预测：发布了关于行业未来的预测或分析
+4. 重要数据：包含了新鲜的、有价值的数据或图表
+
+请仅返回一个纯粹的JSON对象，格式如下：
+{{
+    "selected_indices": [0, 2, 4]
+}}
+
+其中selected_indices是一个整数数组，包含符合标准的推文在列表中的索引位置（从0开始）。
+
+推文列表：
+{input_tweet_list}
+
+请返回包含 'selected_indices' 的JSON响应，其中 'selected_indices' 是一个整数列表，
+表示符合重要性标准的推文索引。"""
     
     def get_filter_stats(self) -> Dict[str, Any]:
         """获取筛选统计信息"""

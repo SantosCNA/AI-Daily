@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 七叔AI洞察助手 (AI Insight Assistant)
 
 ## 🎯 项目概述
@@ -99,176 +98,75 @@ cp env.example .env
 python init_db.py
 ```
 
-### 5. 测试配置
+### 5. 运行系统
 ```bash
-python test_config.py
-```
-
-### 6. 运行完整流水线
-```bash
+# 运行完整流水线
 python main.py
+
+# 启动审核界面
+python start_review_app.py
 ```
 
-### 7. 启动审核界面
-```bash
-python start_review_app.py
+## 📁 项目结构
+
+```
+AI-Daily/
+├── ai_processor/          # AI处理核心
+├── fetcher/              # 数据获取模块
+├── digest_generator/     # 日报生成器
+├── notification/         # 通知系统
+├── review_app/          # Web审核界面
+├── configs/             # 配置文件
+├── prompts/             # AI提示词
+├── digest/              # 生成的日报
+├── .github/             # GitHub Actions
+├── _config.yml          # Jekyll配置
+├── Gemfile              # Ruby依赖
+└── README.md            # 项目说明
 ```
 
 ## 🔧 配置说明
 
-### 内容筛选配置
-配置文件：`configs/filter_config.yaml`
-- 筛选严格度：strict/moderate/loose
-- 保留率配置：各信源类型的内容保留比例
-- LLM提示词：可自定义的筛选提示词
-- 备用规则：规则基础筛选配置
+### 环境变量配置
+所有敏感信息都通过环境变量配置，不会提交到代码仓库：
 
-### GitHub Pages配置
-配置文件：`.github/workflows/deploy.yml`
-- 自动触发：推送代码或API调用
-- Jekyll构建：静态网站生成
-- 自动部署：GitHub Pages发布
+- **API密钥**：DeepSeek、Twitter等第三方服务的API密钥
+- **数据库配置**：数据库连接字符串
+- **邮件配置**：SMTP服务器和认证信息
+- **GitHub配置**：Personal Access Token和仓库信息
 
-## 📊 信源配置
+### 安全措施
+- `.env` 文件已添加到 `.gitignore`
+- 所有测试文件都排除在部署之外
+- 数据库文件不会上传到GitHub
+- 敏感配置使用环境变量
 
-### 技术核心
-- **arXiv**：AI/ML学术论文
-- **Hugging Face**：开源AI模型
-- **GitHub Trending**：热门AI项目
-- **Twitter List**：AI领域KOL动态
+## 📊 部署状态
 
-### 产品与发布
-- **OpenAI Blog**：官方发布
-- **DeepMind Blog**：研究进展
-- **TechCrunch AI**：行业新闻
-- **Product Hunt AI**：新产品
+[![Deploy to GitHub Pages](https://github.com/SantosCNA/AI-Daily/workflows/Deploy%20AI%20Daily%20to%20GitHub%20Pages/badge.svg)](https://github.com/SantosCNA/AI-Daily/actions)
 
-### 市场与生态
-- **机器之心**：国内AI动态
-- **AI前线**：技术实践
-- **A16Z AI**：投资动向
+- **在线访问**：[https://santoscna.github.io/AI-Daily/](https://santoscna.github.io/AI-Daily/)
+- **自动部署**：通过GitHub Actions实现
+- **构建工具**：Jekyll静态网站生成器
 
-## 🌐 访问地址
+## 🤝 贡献指南
 
-### 本地开发
-- 审核界面：http://localhost:9000
-- API端点：http://localhost:9000/api/*
-
-### GitHub Pages（部署后）
-- 主页：https://your-username.github.io/ai-daily/
-- 日报索引：https://your-username.github.io/ai-daily/digest/
-- 具体日报：https://your-username.github.io/ai-daily/digest/YYYY-MM-DD.html
-
-## 📝 日报格式
-
-### 七叔AI洞察日报结构
-```
-# 七叔AI洞察日报 - YYYY-MM-DD
-
-## 🎯 核心动态（总览）
-用2-3句话概括今日AI世界的主要动向
-
-## 📈 趋势、启示与展望
-资深分析师视角的趋势分析和未来展望
-
-## 🔍 今日精选（分述）
-### 🤖 技术突破
-### 🚀 产品发布  
-### 💼 行业动态
-
-## 📋 其他动态
-完整的信息列表
-```
-
-## 🔄 工作流程
-
-1. **定时触发**：每日自动运行数据抓取
-2. **内容筛选**：LLM智能筛选 + 规则备用
-3. **AI处理**：DeepSeek API生成洞察
-4. **日报生成**：结构化Markdown格式
-5. **邮件通知**：发送审核通知
-6. **人工审核**：Web界面预览编辑
-7. **一键发布**：自动部署到GitHub Pages
-8. **在线访问**：几分钟后即可访问
-
-## 🛠️ 开发指南
-
-### 项目结构
-```
-ai-insight-assistant/
-├── .github/workflows/     # GitHub Actions工作流
-├── configs/               # 配置文件
-├── prompts/               # LLM提示词
-├── fetcher/               # 数据获取层
-├── ai_processor/          # AI处理层
-├── digest_generator/      # 日报生成层
-├── review_app/            # Web审核界面
-├── notification/           # 通知系统
-├── logs/                  # 日志文件
-└── digest/                # 日报文件（Jekyll）
-```
-
-### 添加新信源
-1. 在`fetcher/`目录下创建新的抓取器
-2. 在`init_db.py`中添加信源配置
-3. 在`orchestrator.py`中集成新抓取器
-4. 更新相关测试和文档
-
-### 自定义筛选规则
-1. 编辑`configs/filter_config.yaml`
-2. 修改`prompts/`目录下的提示词
-3. 调整`fetcher/content_filter.py`中的规则
-
-## 🧪 测试
-
-### 运行所有测试
-```bash
-# 配置测试
-python test_config.py
-
-# 筛选功能测试
-python test_filter_config.py
-
-# GitHub Pages功能测试
-python test_github_pages.py
-
-# 完整流水线测试
-python main.py
-```
-
-## 🚨 故障排除
-
-### 常见问题
-1. **API调用失败**：检查API密钥和网络连接
-2. **数据库错误**：运行`python init_db.py`重新初始化
-3. **邮件发送失败**：确认SMTP配置和Gmail应用密码
-4. **GitHub部署失败**：检查Token权限和工作流配置
-
-### 日志查看
-- 应用日志：`logs/app.log`
-- 控制台输出：运行时实时显示
-- GitHub Actions：查看工作流执行日志
-
-## 📞 支持与反馈
-
-- **问题报告**：创建GitHub Issue
-- **功能建议**：提交Feature Request
-- **贡献代码**：Fork项目并提交Pull Request
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启 Pull Request
 
 ## 📄 许可证
 
-本项目采用MIT许可证，详见LICENSE文件。
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
 
-## 🙏 致谢
+## 📞 联系方式
 
-- DeepSeek团队提供的AI API服务
-- 开源社区的各种工具和库
-- 所有为AI领域做出贡献的研究者和开发者
+如有问题或建议，请通过以下方式联系：
+- 创建 GitHub Issue
+- 发送邮件到项目维护者
 
 ---
 
-**注意**：请妥善保管您的API密钥和访问令牌，不要将其提交到代码仓库中！
-=======
-# AI-Daily
-AI Daily, regularly updated, providing the latest and most cutting-edge in-depth analysis of AI.  Key Highlights: 3-5 top headline points daily, in-depth overview, tools &amp; resources.  Suitable for: AI practitioners, research enthusiasts, product managers, developers, etc., all of whom can quickly obtain cutting-edge information.
->>>>>>> 8519b710da1422abdfb07a817a6eae5abe9ec6d8
+**注意**：本项目不包含任何敏感信息或API密钥，所有配置都通过环境变量管理。

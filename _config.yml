@@ -1,6 +1,6 @@
 title: 七叔AI洞察日报
 description: AI领域的每日洞察和趋势分析
-baseurl: "" # 如果部署到username.github.io/repo-name，则设置为"/repo-name"
+baseurl: "/AI-Daily" # 部署到username.github.io/repo-name
 url: "https://santoscna.github.io" # 设置为你的GitHub Pages URL
 
 # 构建设置
@@ -37,6 +37,10 @@ exclude:
   - main.py
   - init_db.py
   - configure_twitter_list.py
+  - app.db
+  - *.db
+  - *.sqlite
+  - *.sqlite3
 
 # 默认布局
 defaults:
