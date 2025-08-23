@@ -25,7 +25,7 @@ class DeepSeekClient:
     
     def __init__(self):
         """初始化DeepSeek客户端"""
-        api_key = os.getenv('DEEPSEEK_API_KEY', 'sk-7ff8f534b0304f268100e43934f53515')
+        api_key = os.getenv('DEEPSEEK_API_KEY')
         if not api_key:
             raise ValueError("DEEPSEEK_API_KEY 环境变量未设置")
         
