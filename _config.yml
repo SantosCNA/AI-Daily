@@ -1,6 +1,6 @@
 title: 七叔AI洞察日报
 description: AI领域的每日洞察和趋势分析
-baseurl: "/AI-Daily" # 部署到username.github.io/repo-name
+baseurl: "" # 部署到username.github.io/repo-name，但baseurl应该为空
 url: "https://santoscna.github.io" # 设置为你的GitHub Pages URL
 
 # 构建设置
